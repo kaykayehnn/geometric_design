@@ -90,9 +90,9 @@ prettyPrintLine("m : ", mLine)
 
 MPoint = 0
 if MPoint is not None:
-    getIntersectionLine("t (M(u={MPoint}) :", tLine, u, MPoint)
-    getIntersectionLine("b (M(u={MPoint}) :", bLine, u, MPoint)
-    getIntersectionLine("m (M(u={MPoint}) :", mLine, u, MPoint)
+    getIntersectionLine(f"t (M(u={MPoint}) :", tLine, u, MPoint)
+    getIntersectionLine(f"b (M(u={MPoint}) :", bLine, u, MPoint)
+    getIntersectionLine(f"m (M(u={MPoint}) :", mLine, u, MPoint)
 
 
 NU = "\u03BD"
