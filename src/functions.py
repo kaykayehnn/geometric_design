@@ -76,12 +76,17 @@ def getLineAt(point, vector, label=None):
 
 
 def prettyPrintLine(label, line):
+    LAMBDA = "\u03BB"
     normalized = normalizeArray(line)
     pprint(label)
     pprint(
         Eq(
-            Eq(normalized[0], normalized[1], evaluate=False),
-            normalized[2],
+            Eq(
+                Eq(normalized[0], normalized[1], evaluate=False),
+                normalized[2],
+                evaluate=False,
+            ),
+            Symbol(LAMBDA),
             evaluate=False,
         )
     )
