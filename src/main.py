@@ -7,6 +7,7 @@ from functions import (
     getPlane,
     getTau,
     getVectorDerivative,
+    prettyPrintEquation,
     prettyPrintLine,
     prettyPrintPlane,
     prettyPrintVector,
@@ -32,32 +33,30 @@ rVector = [rX, rY, rZ]
 ruVector = getVectorDerivative(rVector, u)
 [rXu, rYu, rZu] = ruVector
 
-prettyPrintVector("r. =", ruVector)
+prettyPrintVector("r.", ruVector)
 
 r1Len = vectorLength(ruVector)
 
-pprint("|r.|=")
-pprint(r1Len)
+prettyPrintEquation("|r.|", r1Len)
 
 ruuVector = getVectorDerivative(rVector, u, 2)
 [rXuu, rYuu, rZuu] = ruVector
 
-prettyPrintVector("r.. =", ruuVector)
+prettyPrintVector("r..", ruuVector)
 
 # Find vector product r. x r1..
 
 productVector = vectorProduct(ruVector, ruuVector)
 
-prettyPrintVector("r. x r.. =", productVector)
+prettyPrintVector("r. x r..", productVector)
 
 productVectorLen = vectorLength(productVector)
 
-pprint("|r. x r..| =")
-pprint(productVectorLen)
+prettyPrintEquation("|r. x r..|", productVectorLen)
 
 tVector = [x / r1Len for x in ruVector]
 
-prettyPrintVector("t-> =", tVector)
+prettyPrintVector("t->", tVector)
 
 bVectorX = simplify(productVector[0] / productVectorLen)
 bVectorY = simplify(productVector[1] / productVectorLen)
@@ -65,11 +64,11 @@ bVectorZ = simplify(productVector[2] / productVectorLen)
 
 bVector = [bVectorX, bVectorY, bVectorZ]
 
-prettyPrintVector("b-> =", [bVectorX, bVectorY, bVectorZ])
+prettyPrintVector("b->", [bVectorX, bVectorY, bVectorZ])
 
 mVector = vectorProduct(bVector, tVector)
 
-prettyPrintVector("m -> =", mVector)
+prettyPrintVector("m->", mVector)
 
 # Sanity check that the of Frene's vectors are all 1
 if (
@@ -127,9 +126,5 @@ ruuuVector = [rX, rY, rZ]
 kappaEquation = getKappa(rVector, u)
 tauEquation = getTau(rVector, u)
 
-pprint(f"{KAPPA} = ")
-pprint(kappaEquation)
-print()
-
-pprint(f"{TAU} = ")
-pprint(tauEquation)
+prettyPrintEquation(KAPPA, kappaEquation)
+prettyPrintEquation(TAU, tauEquation)

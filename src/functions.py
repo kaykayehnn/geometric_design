@@ -37,16 +37,17 @@ def scalarProduct(vectorA, vectorB):
     )
 
 
+def prettyPrintEquation(label, equation):
+    normalized = normalizeInfinity(equation)
+    pprint(Eq(Symbol(label), normalized, evaluate=False))
+    print()
+
+
 def prettyPrintVector(label, vector):
     normalized = normalizeArray(vector)
-    pprint(label)
-    pprint("(")
-    pprint(normalized[0])
-    pprint(",")
-    pprint(normalized[1])
-    pprint(",")
-    pprint(normalized[2])
-    pprint(")")
+    vector = Matrix(normalized).transpose()
+    pprint(Eq(Symbol(label), vector, evaluate=False))
+    print()
 
 
 def verifyVector(vector, label):
@@ -77,16 +78,20 @@ def getLineAt(point, vector, label=None):
 def prettyPrintLine(label, line):
     normalized = normalizeArray(line)
     pprint(label)
-    pprint(normalized[0])
-    pprint("=")
-    pprint(normalized[1])
-    pprint("=")
-    pprint(normalized[2])
+    pprint(
+        Eq(
+            Eq(normalized[0], normalized[1], evaluate=False),
+            normalized[2],
+            evaluate=False,
+        )
+    )
+    print()
 
 
 def prettyPrintPlane(label, plane):
     pprint(label)
     pprint(Eq(plane, 0))
+    print()
 
 
 def getIntersectionLine(label, line, replacement, point):
