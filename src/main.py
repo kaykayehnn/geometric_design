@@ -71,6 +71,14 @@ mVector = vectorProduct(bVector, tVector)
 
 prettyPrintVector("m -> =", mVector)
 
+# Sanity check that the of Frene's vectors are all 1
+if (
+    vectorLength(tVector) != 1
+    or vectorLength(bVector) != 1
+    or vectorLength(mVector) != 1
+):
+    raise Exception("INVARIANT: Frene's vector have to have a length of 1")
+
 # Here we use only the numerator part of the vectors for simplification (all 3
 # fractions share the same denominator so, we can remove it)
 tLine = getLineAt(rVector, ruVector, "t")
