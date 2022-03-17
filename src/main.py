@@ -24,9 +24,9 @@ a = Symbol("a", real=True, positive=True)
 b = Symbol("b", real=True, positive=True)
 c = Symbol("c")
 
-rX = a * cos(u)
-rY = a * sin(u)
-rZ = b * u
+rX = u * sqrt(2)
+rY = (u ** 2) / 2
+rZ = ln(u)
 
 rVector = [rX, rY, rZ]
 
@@ -64,6 +64,7 @@ bVectorZ = simplify(productVector[2] / productVectorLen)
 
 bVector = [bVectorX, bVectorY, bVectorZ]
 
+# TODO: https://stackoverflow.com/a/56653481/6317168
 prettyPrintVector("b->", [bVectorX, bVectorY, bVectorZ])
 
 mVector = vectorProduct(bVector, tVector)
@@ -88,7 +89,7 @@ prettyPrintLine("t : ", tLine)
 prettyPrintLine("b : ", bLine)
 prettyPrintLine("m : ", mLine)
 
-MPoint = 0
+MPoint = 1
 if MPoint is not None:
     getIntersectionLine(f"t (M(u={MPoint}) :", tLine, u, MPoint)
     getIntersectionLine(f"b (M(u={MPoint}) :", bLine, u, MPoint)
@@ -107,7 +108,7 @@ prettyPrintPlane(f"{NU} : ", nuPlane)
 prettyPrintPlane(f"{MU} : ", muPlane)
 prettyPrintPlane(f"{PI} : ", piPlane)
 
-MPointPlane = 0
+MPointPlane = 1
 if MPointPlane is not None:
     getIntersectionPlane(f"{NU} (u={MPointPlane}) : ", nuPlane, u, MPointPlane)
     getIntersectionPlane(f"{MU} (u={MPointPlane}) : ", muPlane, u, MPointPlane)

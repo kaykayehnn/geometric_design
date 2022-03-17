@@ -2,6 +2,7 @@ from sympy import *
 
 
 def normalizeInfinity(expr):
+    # TODO: replace with UnevaluatedExpr(1/0)?
     divisionByZero = 1 / Symbol("O")
     # zoo is complex infinity, which is the result of 1 / 0.
     # We replace it with 1 / O (this is the 15th letter of the alphabet, not
@@ -13,11 +14,16 @@ def normalizeArray(array):
     return [normalizeInfinity(x) for x in array]
 
 
-def vectorLength(a):
-    len = sqrt(a[0] ** 2 + a[1] ** 2 + a[2] ** 2)
+def vectorLength(vector):
+    len = sqrt(vector[0] ** 2 + vector[1] ** 2 + vector[2] ** 2)
     return simplify(len)
 
 
+def vectorLengthMatrix(vector):
+    return simplify(sqrt(vector[0] ** 2 + vector[1] ** 2 + vector[2] ** 2))
+
+
+# TODO: remove this in favor of vectorProductMatrix
 def vectorProduct(a, b):
     matrix1 = Matrix([[a[1], a[2]], [b[1], b[2]]])
     matrix2 = Matrix([[a[0], a[2]], [b[0], b[2]]])
@@ -29,6 +35,10 @@ def vectorProduct(a, b):
 
     simplified = [simplify(x) for x in [det1, -det2, det3]]
     return simplified
+
+
+def vectorProductMatrix(a, b):
+    return Matrix(vectorProduct(a, b))
 
 
 def scalarProduct(vectorA, vectorB):
@@ -59,6 +69,7 @@ def verifyVector(vector, label):
             )
 
 
+# TODO: return matrix from here
 def getLineAt(point, vector, label=None):
     x = Symbol("x")
     y = Symbol("y")
@@ -76,6 +87,8 @@ def getLineAt(point, vector, label=None):
 
 
 def prettyPrintLine(label, line):
+    # TODO: make this on one line
+
     LAMBDA = "\u03BB"
     normalized = normalizeArray(line)
     pprint(label)
@@ -94,6 +107,7 @@ def prettyPrintLine(label, line):
 
 
 def prettyPrintPlane(label, plane):
+    # TODO: make this on one line
     pprint(label)
     pprint(Eq(plane, 0))
     print()
@@ -150,3 +164,110 @@ def getTau(vector, variable):
         vectorLength(vectorProduct(vectorD, vectorDD)) ** 2
     )
     return tau
+
+
+def prettifySymbol(string):
+    return pretty(Symbol(string))
+
+
+def displayCurve(label, controlPoints):
+    pointsStr = ""
+    for i in range(len(controlPoints)):
+        (x, y) = controlPoints[i]
+        identifier = prettifySymbol(f"P{i}")
+        pointsStr += f"{identifier}({x},{y}), "
+
+    pointsStr = pointsStr[0:-2]
+    print(f"{label}: {pointsStr}")
+
+
+def displayCurveRaisePowerFormula(label, pointLabel, power):
+    pointsFormulaStr = ""
+    for i in range(power + 2):
+        identifier = prettifySymbol(f"{pointLabel}{i}")
+        pointsFormulaStr += f"{identifier}, "
+
+    pointsFormulaStr = pointsFormulaStr[0:-2]
+    print(f"{label}: {pointsFormulaStr}")
+
+
+def convertControlPointsToVectors(controlPoints):
+    return [Matrix(cp).transpose() for cp in controlPoints]
+
+
+def makeEquationChain(equations):
+    finalEquation = equations[len(equations) - 1]
+    for i in range(len(equations) - 2, -1, -1):
+        finalEquation = Eq(equations[i], finalEquation, evaluate=False)
+
+    return finalEquation
+
+
+def printKnots(knots, letter):
+    symbols = [Symbol(letter + str(x)) for x in range(len(knots))]
+
+    pprint(Matrix([symbols, knots]))
+    print()
+
+
+def verifyBSpline(knots):
+    previous = 0
+    for knot in knots:
+        if knot < previous:
+            raise ValueError("B-spline is invalid: knots must be in ascending order")
+
+        previous = knot
+
+    if knots[-1] != 1:
+        raise ValueError(
+            f"B-spline is invalid: last knot must be equal to 1, but found {knots[-1]}"
+        )
+
+
+def findPositionInBSpline(knots, value):
+    if value < 0 or value > 1:
+        raise ValueError(f"Value must be between 0 and 1 but got {value}")
+
+    verifyBSpline(knots)
+
+    for i in range(len(knots) - 1, -1, -1):
+        if value >= knots[i]:
+            return i
+
+    raise RuntimeError(f"No appropriate position for {value} was found")
+
+
+def trimTrailingComma(string, commaLength=1):
+    return string[0:-commaLength]
+
+
+def incrementLetter(letter):
+    if len(letter) == 0 or len(letter) > 1:
+        raise ValueError(f"Expected letter but got '{letter}'")
+    if letter == "z" or letter == "Z":
+        raise ValueError(f"The letter {letter} cannot be incremented")
+
+    return chr(ord(letter) + 1)
+
+
+def incrementLetterPrimeness(letter):
+    return letter + "prime"
+
+
+def printControlPointsTable(
+    controlPointLetter, cpLength, nextCPLetter, affectedPointsStart, affectedPointsEnd
+):
+    primeControlPointLetter = incrementLetterPrimeness(controlPointLetter)
+    primePoints = [Symbol(f"{primeControlPointLetter}_{x}") for x in range(cpLength)]
+    oldPoints = [Symbol(f"{controlPointLetter}_{x}") for x in range(cpLength - 1)]
+    newPoints = [
+        Symbol(f"{nextCPLetter}_{x}")
+        for x in range(affectedPointsStart, affectedPointsEnd)
+    ]
+    withNewPoints = (
+        oldPoints[:affectedPointsStart] + newPoints + oldPoints[affectedPointsEnd - 1 :]
+    )
+
+    matrix = Matrix([primePoints, withNewPoints])
+    pprint(matrix)
+    print()
